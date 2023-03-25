@@ -1,6 +1,7 @@
 # Python-Simulation-of-BLDC-motor
 
 Simulation of a BLDC motor using python.
+Two methodos implemented, V/F scalar control, in open-loop, and IFOC closed-loop control.
 
 ## Mathematical model for the BLDC motor
 
@@ -37,10 +38,63 @@ I_c \\
 0 & 0 & 0 & 0
 \end{array}\right)
 \left(\begin{array}{c}
-V_an \\
-V_bn \\
-V_cn \\
+V_{an} \\
+V_{bn} \\
+V_{cn} \\
 T_c
+\end{array}\right)
+$$
+
+## Mechanical equation from the model
+$$
+J\frac{d\omega_m}{dt} = T_e -T_l -B_v\omega_m
+$$
+
+where:
+$$
+T_e = P_p\phi_m[i_af_A(\theta_e)+i_bf_B(\theta_e)+i_cf_C(\theta_e)]
+$$
+
+## Inverter equation
+
+$
+V_{an},
+V_{bn},
+V_{cn}:
+$ 
+states that the Tensions are $V_a - V_n$ where $V_n$ is the potential on the wire junction of the rotor, as seen in the figure bellow:
+![inverter](figuras/inverter_motor.png)
+
+To do this transformation a matrix was calculated:
+
+$$
+\left(\begin{array}{c}
+V_{an} \\
+V_{bn} \\
+V_{cn}
+\end{array}\right)
+=
+\left(\begin{array}{ccc}
+\frac{2}{3} & -\frac{1}{3} & -\frac{1}{3} \\
+-\frac{1}{3} & \frac{2}{3} & -\frac{1}{3} \\
+-\frac{1}{3} & -\frac{1}{3} & \frac{2}{3}
+\end{array}\right)
+\left(\begin{array}{c}
+V_{ag} \\
+V_{bg} \\
+V_{cg}
+\end{array}\right)
++
+\frac{1}{3}
+\left(\begin{array}{ccc}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{array}\right)
+\left(\begin{array}{c}
+e_a \\
+e_b \\
+e_c
 \end{array}\right)
 $$
 
@@ -132,3 +186,21 @@ For this work i will be using a A2212/13T brushless motor.
 * Resistance 0.090$\Omega$
 * Poles 14
 * Inductance 0.1mH
+
+## Calculations
+$
+K_v = \frac{\omega_{rpm}}{V_P0.95}
+$
+
+$K_v$ - is the voltage constante of a motor, rought means how many rotations the motor will go for every Volt.
+
+$
+K_p = \frac{60}{2 \pi  K_v}
+$
+if Kv in rpm
+
+for Kv in rad it simply is the inverse of Kp
+
+$
+K_p = \frac{1}{K_v}
+$
